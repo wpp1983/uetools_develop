@@ -120,7 +120,6 @@ export const Project = () =>
     const [project, setProject] = React.useState<UnrealEngineProject>();
     const [buildTarget, setBuildTarget] = React.useState<'Editor' | 'Game'>('Editor');
     const [buildConfiguration, setBuildConfiguration] = React.useState<'Development' | 'Debug'>('Development');
-    const [isTrackEnable, setIsTrackEnable] = React.useState<boolean>(false);
 
     VSCodeWrapper.onMessage((message) => {
         setProject(message.data.project);
@@ -132,8 +131,7 @@ export const Project = () =>
             command: 'uetools.launchProject',
             args: {
                 target: buildTarget,
-                configuration: buildConfiguration,
-                isTrackEnable: buildTarget === 'Game' ? isTrackEnable : false
+                configuration: buildConfiguration
             }
         });
     };
@@ -144,6 +142,16 @@ export const Project = () =>
             command: 'uetools.buildProject',
             args: {
                 target: buildTarget,
+                configuration: buildConfiguration
+            }
+        });
+    };
+
+    const onPackageProject = () => {
+        VSCodeWrapper.postMessage({
+            type: 'runCommand',
+            command: 'uetools.packageProject',
+            args: {
                 configuration: buildConfiguration
             }
         });
@@ -176,43 +184,78 @@ export const Project = () =>
             </DescriptionPanel>
             <ButtonsWrapper>
                 <BuildOptionsWrapper>
-                    <Select value={buildTarget} onChange={(e) => setBuildTarget(e.target.value as 'Editor' | 'Game')}>
-                        <option value="Editor">Editor</option>
-                        <option value="Game">Game</option>
-                    </Select>
-                    {buildTarget === 'Game' && (
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={isTrackEnable}
-                                onChange={(e) => setIsTrackEnable(e.target.checked)}
-                            />
-                            Enable Track
-                        </label>
-                    )}
-                    <Button onClick={onOpenProject}>
-                        Launch Project
-                    </Button>
-                </BuildOptionsWrapper>
-                <BuildOptionsWrapper>
-                    <Select value={buildTarget} onChange={(e) => setBuildTarget(e.target.value as 'Editor' | 'Game')}>
-                        <option value="Editor">Editor</option>
-                        <option value="Game">Game</option>
-                    </Select>
                     <Select value={buildConfiguration} onChange={(e) => setBuildConfiguration(e.target.value as 'Development' | 'Debug')}>
                         <option value="Development">Development</option>
                         <option value="Debug">Debug</option>
                     </Select>
-                    <Button onClick={onBuildProject}>
-                        Build Project
+                    <Button onClick={() => {
+                        VSCodeWrapper.postMessage({
+                            type: 'runCommand',
+                            command: 'uetools.launchProject',
+                            args: {
+                                target: 'Editor',
+                                configuration: buildConfiguration
+                            }
+                        });
+                    }}>
+                        Launch Editor
+                    </Button>
+                    <Button onClick={() => {
+                        VSCodeWrapper.postMessage({
+                            type: 'runCommand',
+                            command: 'uetools.buildProject',
+                            args: {
+                                target: 'Editor',
+                                configuration: buildConfiguration
+                            }
+                        });
+                    }}>
+                        Build Editor
                     </Button>
                 </BuildOptionsWrapper>
-                <Button onClick={onBuildData}>
-                    Build TS Data
-                </Button>
-                <Button onClick={onStartServer}>
-                    Start Game Server
-                </Button>
+
+                <BuildOptionsWrapper>
+                    <Select value={buildConfiguration} onChange={(e) => setBuildConfiguration(e.target.value as 'Development' | 'Debug')}>
+                        <option value="Development">Development</option>
+                        <option value="Debug">Debug</option>
+                    </Select>
+                    <Button onClick={() => {
+                        VSCodeWrapper.postMessage({
+                            type: 'runCommand',
+                            command: 'uetools.buildProject',
+                            args: {
+                                target: 'Game',
+                                configuration: buildConfiguration
+                            }
+                        });
+                    }}>
+                        Build Game
+                    </Button>
+                    <Button onClick={onPackageProject}>
+                        Package Game
+                    </Button>
+                    <Button onClick={() => {
+                        VSCodeWrapper.postMessage({
+                            type: 'runCommand',
+                            command: 'uetools.launchProject',
+                            args: {
+                                target: 'Game',
+                                configuration: buildConfiguration
+                            }
+                        });
+                    }}>
+                        Launch Game
+                    </Button>
+                </BuildOptionsWrapper>
+
+                <BuildOptionsWrapper>
+                    <Button onClick={onBuildData}>
+                        Build TS Data
+                    </Button>
+                    <Button onClick={onStartServer}>
+                        Start Game Server
+                    </Button>
+                </BuildOptionsWrapper>
             </ButtonsWrapper>
         </>
     );

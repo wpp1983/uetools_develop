@@ -19,11 +19,13 @@ export const launchProject = (params: LaunchProjectParams = { target: 'Editor', 
             }
 
             try {
-                // First build the project
-                await vscode.commands.executeCommand('uetools.buildProject', {
-                    target: params.target,
-                    configuration: params.configuration
-                });
+                // Only build if launching Editor
+                if (params.target === 'Editor') {
+                    await vscode.commands.executeCommand('uetools.buildProject', {
+                        target: params.target,
+                        configuration: params.configuration
+                    });
+                }
 
                 // Then open the project
                 await vscode.commands.executeCommand('uetools.openProject', {

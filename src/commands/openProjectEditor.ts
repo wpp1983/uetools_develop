@@ -83,14 +83,16 @@ export const openProject = (params: LaunchProjectParams = { target: 'Editor', co
             const outputChannel = vscode.window.createOutputChannel("Unreal Engine Logs", "log");
             outputChannel.show(true);
 
+            let logPath = "";
+
             if (os === "win32") {
                 buildOsType = "Win64";
                 const projectPath = path.join(projectFolder, project.Modules[0].Name);
                 
                 // Construct command based on mode
-                const projectArg = `-project="${projectPath}.uproject"`;
                 let commandArgs = "";
                 if (launchTarget ===  'Editor') {
+                    const projectArg = `-project="${projectPath}.uproject"`;
                     commandArgs = `${projectArg} `;
                 
                     const unrealEditorPath = Context.get("unrealEditorPath") as string;
@@ -100,21 +102,39 @@ export const openProject = (params: LaunchProjectParams = { target: 'Editor', co
                         cwd: unrealEngineInstallation
                         }
                     );
+
+                    const logFileName = `${project.Modules[0].Name}.log`;
+                    logPath = path.join(projectFolder, 'Saved', 'Logs', logFileName);
+
                 } else if (launchTarget === 'Game') {
-                    commandArgs = `-game ${projectArg} -WINDOWED -ResX=2560 -ResY=1440 `;
+
+                    // add other arguments
+                    commandArgs += `-WINDOWED -ResX=2560 -ResY=1440 `;
+
                     if (params.isTrackEnable) {
-                        commandArgs += `-tracehost=127.0.0.1 -trace=cpu,frame,gpu -statnamevents`;
+                        commandArgs += `-tracehost=127.0.0.1 -trace=cpu,frame,gpu -statnamevents `;
                     }
 
                     const gameExeName = project.Modules[0].Name + '.exe';
-
-                    const unrealGamePath = path.join(projectPath, 'Binaries', 'Win64', gameExeName);
-                    shellCommand = new vscode.ShellExecution(
-                    `$process = Start-Process -FilePath '${unrealGamePath}' -ArgumentList '${commandArgs}' -PassThru; Wait-Process -Id $process.Id; exit $process.ExitCode`,
-                    { 
-                        cwd: unrealEngineInstallation
+                    // Use projectFolder directly instead of constructing through projectPath
+                    const unrealGameExePath = path.join(projectFolder, 'Binaries', 'Win64', gameExeName);
+                    
+                    // Verify path exists
+                    if (!fs.existsSync(unrealGameExePath)) {
+                        outputChannel.appendLine(`Error: Game executable not found at: ${unrealGameExePath}`);
+                        reject(new Error(`Game executable not found at: ${unrealGameExePath}`));
+                        return;
                     }
-                );
+
+                    outputChannel.appendLine(`Launching game from: ${unrealGameExePath}`);
+                    outputChannel.appendLine(`With arguments: ${commandArgs}`);
+                    
+                    shellCommand = new vscode.ShellExecution(
+                        `$process = Start-Process -FilePath '${unrealGameExePath}' -ArgumentList '${commandArgs}' -PassThru -WorkingDirectory '${projectFolder}'; if ($process) { Wait-Process -Id $process.Id; exit $process.ExitCode } else { exit 1 }`
+                    );
+
+                    const logFileName = `${project.Modules[0].Name}.log`;
+                    logPath = path.join(projectFolder, 'Saved', 'Cooked', 'Windows', 'client', 'Saved', 'Logs', logFileName);
                     
                 } else {
                     reject(new Error('Invalid mode'));
@@ -126,8 +146,9 @@ export const openProject = (params: LaunchProjectParams = { target: 'Editor', co
                 console.log('openProject shellCommand: ', shellCommand);
 
                 // Setup log monitoring
-                const logFileName = `${project.Modules[0].Name}.log`;
-                const logPath = path.join(projectFolder, 'Saved', 'Logs', logFileName);
+                if (!fs.existsSync(logPath)) {
+                    console.warn('logPath not found: ', logPath);
+                }
                 let logMonitorInterval: NodeJS.Timeout;
 
                 vscode.tasks.onDidStartTask((e) => {

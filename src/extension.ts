@@ -10,6 +10,7 @@ import { ProjectViewController } from './components/uetools/project/controller';
 import { ModulesViewController } from './components/uetools/modules/controller';
 import { openProject } from './commands/openProjectEditor';
 import { buildProject } from './commands/buildProject';
+import { packageProject } from './commands/packageProject';
 // import { buildAndGenerateCompileCommands } from './commands/routines/build';
 import { buildModule } from './commands/buildModule';
 import { showPluginInExplorer } from './commands/showPluginInExplorer';
@@ -35,6 +36,7 @@ const commands: Command[] = [
     {command: 'generateCompileCommands', callback: generateCompileCommands},
     {command: 'openProject', callback: openProject},
     {command: 'buildProject', callback: buildProject},
+    {command: 'packageProject', callback: packageProject},
     // {command: 'buildAndGenerateCompileCommands', callback: buildAndGenerateCompileCommands},
     {command: 'buildModule', callback: buildModule},
     {command: 'showPluginInExplorer', callback: showPluginInExplorer},
