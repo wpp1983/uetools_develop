@@ -20,7 +20,7 @@ export const buildDataCommands = (): Promise<boolean> => {
             const projectFolder = Context.get("projectFolder") as string;
 
             // 
-            const batCmdFilePath = path.join(projectFolder, "./../build_data.bat");
+            const batCmdFilePath = path.join(projectFolder, "./../build_all.bat");
 
             // use powershell to run the bat file in the path of the bat file   
             let shellCommand = new vscode.ShellExecution(
