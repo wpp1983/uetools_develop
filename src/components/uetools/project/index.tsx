@@ -170,6 +170,13 @@ export const Project = () =>
             command: 'uetools.startServer',
         });
     };
+
+    const onBuildServer = () => {
+        VSCodeWrapper.postMessage({
+            type: 'runCommand',
+            command: 'uetools.buildServer',
+        });
+    };
     
 
     return (
@@ -251,6 +258,9 @@ export const Project = () =>
                 <BuildOptionsWrapper>
                     <Button onClick={onBuildData}>
                         Build TS Data
+                    </Button>
+                    <Button onClick={onBuildServer}>
+                        Build Server
                     </Button>
                     <Button onClick={onStartServer}>
                         Start Game Server
