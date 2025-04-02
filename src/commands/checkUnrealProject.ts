@@ -11,12 +11,15 @@ const checkUnrealProject = (): Promise<boolean> => {
         (async () => {
             const workspaceFolders = vscode.workspace.workspaceFolders;
 
+            var projectName = "";
             // Check if the workspaces contains a any file with the extension .uproject
             if (workspaceFolders) {
                 for (const folder of workspaceFolders) {
                     const files = fs.readdirSync(folder.uri.fsPath);
                     for (const file of files) {
                         if (file.endsWith('.uproject')) {
+
+                            projectName = file.replace('.uproject', '');
                             // parse the file and cast it as UnrealEngineProject
                             const project = JSON.parse(fs.readFileSync(`${folder.uri.fsPath}/${file}`, { encoding: 'utf8' }).replace(/^\uFEFF/, '')) as UnrealEngineProject;
 
@@ -50,6 +53,14 @@ const checkUnrealProject = (): Promise<boolean> => {
 
                             // persist the UnrealEngineProject in the global state
                             Context.set('project', project);
+
+                            // persist the EngineVersion in the global state
+                            Context.set('engineVersion', '5.5');
+
+                            // persist the project name in the global state
+                            Context.set('projectName', projectName);
+
+
 
                             // notify the user that the workspace is a valid Unreal Engine project
                             vscode.window.showInformationMessage(`Unreal Engine project ${project.Modules[0].Name} found associated with Engine Version: ${project.EngineAssociation}.`);

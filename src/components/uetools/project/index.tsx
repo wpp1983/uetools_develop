@@ -177,7 +177,20 @@ export const Project = () =>
             command: 'uetools.buildServer',
         });
     };
-    
+
+    const onGenerateClangdConfig = () => {
+        VSCodeWrapper.postMessage({
+            type: 'runCommand',
+            command: 'uetools.generateClangdConfigFile'
+        });
+    };
+
+    const onGenerateCompileCommands = () => {
+        VSCodeWrapper.postMessage({
+            type: 'runCommand',
+            command: 'uetools.generateClangDatabase'
+        });
+    };
 
     return (
         <>
@@ -256,14 +269,23 @@ export const Project = () =>
                 </BuildOptionsWrapper>
 
                 <BuildOptionsWrapper>
+                    <Button onClick={onGenerateCompileCommands}>
+                        Generate Compile Commands
+                    </Button>
+                    <Button onClick={onGenerateClangdConfig}>
+                        Generate .clangd Config
+                    </Button>
+                </BuildOptionsWrapper>
+
+                <BuildOptionsWrapper>
                     <Button onClick={onBuildData}>
-                        Build TS Data
+                        Build Data
+                    </Button>
+                    <Button onClick={onStartServer}>
+                        Start Server
                     </Button>
                     <Button onClick={onBuildServer}>
                         Build Server
-                    </Button>
-                    <Button onClick={onStartServer}>
-                        Start Game Server
                     </Button>
                 </BuildOptionsWrapper>
             </ButtonsWrapper>

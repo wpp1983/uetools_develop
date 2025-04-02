@@ -58,7 +58,10 @@ export const changeEngineVersion = (): Promise<boolean> => {
                                 project.EngineAssociation = engineFolder.split('UE_')[1];
                             } else {
                                 project.EngineAssociation = '5.5';
+                                
                             }
+
+                            project.EngineVersion = '5.5';
 
                             // write the file back
                             fs.writeFileSync(`${folder.uri.fsPath}/${file}`, JSON.stringify(project));

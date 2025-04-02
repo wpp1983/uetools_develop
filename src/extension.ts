@@ -8,11 +8,9 @@ import { Context } from './helpers/context';
 import { ActiveProjectStatusBarItem } from './StatusBarItems/ActiveProject';
 import { ProjectViewController } from './components/uetools/project/controller';
 import { ModulesViewController } from './components/uetools/modules/controller';
-import { openProject } from './commands/openProjectEditor';
 import { buildProject } from './commands/buildProject';
 import { buildServer } from './commands/buildServer';
 import { packageProject } from './commands/packageProject';
-// import { buildAndGenerateCompileCommands } from './commands/routines/build';
 import { buildModule } from './commands/buildModule';
 import { showPluginInExplorer } from './commands/showPluginInExplorer';
 import { generateProjectFilesAndCompileCommands } from './commands/routines/generateProjectFilesAndCompileCommands';
@@ -22,6 +20,8 @@ import { changeEngineVersionRoutine } from './commands/routines/changeEngineVers
 import { StartServerCommands } from './commands/routines/startServer';
 import { buildDataCommands } from './commands/routines/buildData';
 import { launchProject } from './commands/routines/launchProject';
+import { generateClangDatabase } from './commands/generateClangDatabase';
+import { generateClangdConfigFile } from './commands/generateClangdConfigFile';
 
 // command list
 interface Command {
@@ -35,11 +35,9 @@ const commands: Command[] = [
     {command: 'detectUnrealEngineInstallation', callback: detectUnrealEngineInstallation},
     {command: 'generateProjectFiles', callback: generateProjectFiles},
     {command: 'generateCompileCommands', callback: generateCompileCommands},
-    {command: 'openProject', callback: openProject},
     {command: 'buildProject', callback: buildProject},
     {command: 'buildServer', callback: buildServer},
     {command: 'packageProject', callback: packageProject},
-    // {command: 'buildAndGenerateCompileCommands', callback: buildAndGenerateCompileCommands},
     {command: 'buildModule', callback: buildModule},
     {command: 'showPluginInExplorer', callback: showPluginInExplorer},
     {command: 'generateProjectFilesAndCompileCommands', callback: generateProjectFilesAndCompileCommands},
@@ -49,6 +47,8 @@ const commands: Command[] = [
     {command: 'startServer', callback: StartServerCommands},
     {command: 'buildData', callback: buildDataCommands},
     {command: 'launchProject', callback: launchProject},
+    {command: 'generateClangDatabase', callback: generateClangDatabase},
+    {command: 'generateClangdConfigFile', callback: generateClangdConfigFile},
 ];
 
 const tasks: vscode.Task[] = [];

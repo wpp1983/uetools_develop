@@ -47,6 +47,9 @@ export class ProjectViewController {
                     case 'runCommand':
                         vscode.commands.executeCommand(message.command, message.args);
                         break;
+                    case 'generateClangdConfig':
+                        vscode.commands.executeCommand('uetools.generateClangdConfig');
+                        break;
                 }
                 // periodicaly send project data to webview
                 setInterval(() => {
