@@ -46,6 +46,7 @@ export interface ProjectContext {
     unrealEngineInstallation: string;
     unrealBuildToolPath: string;
     runtimePath: string;
+    unrealEditorPath: string;
 }
 
 export function validateProjectContext(): ProjectContext {
@@ -84,6 +85,11 @@ export function validateProjectContext(): ProjectContext {
         throw new Error('No runtime path found');
     }
 
+    const unrealEditorPath = Context.get("unrealEditorPath") as string;
+    if (!unrealEditorPath) {
+        throw new Error('No unreal editor path found');
+    }
+
     return {
         project,
         projectPath,
@@ -91,6 +97,7 @@ export function validateProjectContext(): ProjectContext {
         engineVersion,
         unrealEngineInstallation,
         unrealBuildToolPath,
-        runtimePath
+        runtimePath,
+        unrealEditorPath
     };
 }

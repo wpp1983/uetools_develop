@@ -152,6 +152,7 @@ export const Project = () =>
             type: 'runCommand',
             command: 'uetools.packageProject',
             args: {
+                target: "Game",
                 configuration: buildConfiguration
             }
         });

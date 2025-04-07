@@ -56,23 +56,10 @@ export const openProjectEditor = (): Promise<boolean> => {
             const os = process.platform;
             const projectPath = path.join(context.projectPath, context.projectName);
             
-            let shellCommand;
-            if (os === 'win32') {
-                shellCommand = new vscode.ShellExecution(
-                    `"${context.runtimePath}" "${projectPath}.uproject"`,
-                    { cwd: context.projectPath }
-                );
-            } else if (os === 'darwin') {
-                shellCommand = new vscode.ShellExecution(
-                    `${context.runtimePath.split(' ').join('\\ ')} ${projectPath.split(' ').join('\\ ')}.uproject`,
-                    { cwd: context.projectPath }
-                );
-            } else if (os === 'linux') {
-                shellCommand = new vscode.ShellExecution(
-                    `${context.runtimePath.split(' ').join('\\ ')} ${projectPath.split(' ').join('\\ ')}.uproject`,
-                    { cwd: context.projectPath }
-                );
-            }
+            const shellCommand = new vscode.ShellExecution(
+                `"${context.unrealEditorPath}" "${projectPath}.uproject"`,
+                { cwd: context.projectPath }
+            );
 
             // Create output channel for UE logs
             const outputChannel = vscode.window.createOutputChannel('UE Editor Logs');
@@ -140,8 +127,6 @@ export const openProjectEditor = (): Promise<boolean> => {
                         resolve(true);
                     }
                 });
-            }).catch((error: unknown) => {
-                reject(error);
             });
         } catch (error: unknown) {
             reject(error);

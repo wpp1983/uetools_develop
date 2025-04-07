@@ -28,7 +28,7 @@ export const launchProject = (params: LaunchProjectParams = { target: 'Editor', 
                 }
 
                 // Then open the project
-                await vscode.commands.executeCommand('uetools.openProject', {
+                await vscode.commands.executeCommand('uetools.openProjectEditor', {
                     target: params.target,
                     configuration: params.configuration,
                     isTrackEnable: params.isTrackEnable

@@ -22,6 +22,7 @@ import { buildDataCommands } from './commands/routines/buildData';
 import { launchProject } from './commands/routines/launchProject';
 import { generateClangDatabase } from './commands/generateClangDatabase';
 import { generateClangdConfigFile } from './commands/generateClangdConfigFile';
+import { openProjectEditor } from './commands/openProjectEditor';
 
 // command list
 interface Command {
@@ -48,6 +49,7 @@ const commands: Command[] = [
     {command: 'buildData', callback: buildDataCommands},
     {command: 'launchProject', callback: launchProject},
     {command: 'generateClangDatabase', callback: generateClangDatabase},
+    {command: 'openProjectEditor', callback: openProjectEditor},
     {command: 'generateClangdConfigFile', callback: generateClangdConfigFile},
 ];
 
